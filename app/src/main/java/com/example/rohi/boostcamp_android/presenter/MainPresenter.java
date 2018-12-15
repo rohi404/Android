@@ -34,7 +34,6 @@ public class MainPresenter implements MVP_Main.ProvidedPresenterOps, MVP_Main.Re
 
     private WeakReference<MVP_Main.RequiredViewOps> mView;
     private MVP_Main.ProvidedModelOps mModel;
-    public static StringBuilder res;
     public static Bitmap bm;
 
     public MainPresenter(MVP_Main.RequiredViewOps view){
@@ -160,10 +159,11 @@ public class MainPresenter implements MVP_Main.ProvidedPresenterOps, MVP_Main.Re
             mModel.removeMovieList();
             getView().notifyDataSetChanged();
 
-            new AsyncTask<Void,Void,Integer>(){
+            new AsyncTask<Void,Void,StringBuilder>(){
 
                 @Override
-                protected Integer doInBackground(Void... voids) {
+                protected StringBuilder doInBackground(Void... voids) {
+                    StringBuilder sb = new StringBuilder();
                     try{
                         String query = URLEncoder.encode(movieText, "utf-8");
                         String apiURL = "https://openapi.naver.com/v1/search/movie.json?query=" + query + "&display=" + 100 + "&";
@@ -193,20 +193,19 @@ public class MainPresenter implements MVP_Main.ProvidedPresenterOps, MVP_Main.Re
                         }
 
                         String line;
-                        res = new StringBuilder();
                         while ((line = br.readLine()) != null) {
-                            res.append(line + "\n");
+                            sb.append(line + "\n");
                         }
                         br.close();
                         con.disconnect();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return 0;
+                    return sb;
                 }
 
                 @Override
-                protected void onPostExecute(Integer adapterPosition) {
+                protected void onPostExecute(StringBuilder res) {
                     try {
                         JSONArray jarray = new JSONObject(res.toString()).getJSONArray("items");   // JSONArray 생성
                         if(jarray.length() != 0){
@@ -216,7 +215,6 @@ public class MainPresenter implements MVP_Main.ProvidedPresenterOps, MVP_Main.Re
                                 int id = i;
                                 String image = jObject.getString("image");
                                 String title = jObject.getString("title");
-                                //String title = Html.fromHtml(jObject.getString("title")).toString();
                                 String link = jObject.getString("link");
                                 double grade = jObject.getDouble("userRating");
                                 String year = jObject.getString("pubDate");
