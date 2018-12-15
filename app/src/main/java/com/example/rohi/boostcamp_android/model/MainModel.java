@@ -17,7 +17,6 @@ public class MainModel implements MVP_Main.ProvidedModelOps {
     public void onDestroy(boolean isChangingConfiguration) {
         if(!isChangingConfiguration){
             mPresenter = null;
-            //mDao = null;
             mMovies = null;
         }
     }

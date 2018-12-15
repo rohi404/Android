@@ -42,7 +42,7 @@ public class MainPresenter implements MVP_Main.ProvidedPresenterOps, MVP_Main.Re
 
     private MVP_Main.RequiredViewOps getView() throws NullPointerException{
         if(mView !=null){
-            return  mView.get(); //WeakReference는 .get() 메서드로 객체를 얻을 수 있다.
+            return  mView.get();
         }else{
             throw new NullPointerException("View is unavailable");
         }
